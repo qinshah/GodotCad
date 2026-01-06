@@ -827,6 +827,7 @@ EditorPlugin::AfterGUIInput GridMapEditor::forward_spatial_input_event(Camera3D 
 		if (mb->is_pressed()) {
 			Node3DEditorViewport::NavigationScheme nav_scheme = (Node3DEditorViewport::NavigationScheme)EDITOR_GET("editors/3d/navigation/navigation_scheme").operator int();
 			if ((nav_scheme == Node3DEditorViewport::NAVIGATION_MAYA || nav_scheme == Node3DEditorViewport::NAVIGATION_MODO) && mb->is_alt_pressed()) {
+				// 如果是这些导航方案，输入动作为NONE
 				input_action = INPUT_NONE;
 			} else if (mb->get_button_index() == MouseButton::LEFT) {
 				bool can_edit = (node && node->get_mesh_library().is_valid());

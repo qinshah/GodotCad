@@ -79,6 +79,7 @@ void EditorSettingsDialog::_settings_property_edited(const String &p_name) {
 	} else if (full_name.begins_with("editors/visual_editors/connection_colors") || full_name.begins_with("editors/visual_editors/category_colors")) {
 		EditorSettings::get_singleton()->set_manually("editors/visual_editors/color_theme", "Custom");
 	} else if (full_name == "editors/3d/navigation/orbit_mouse_button" || full_name == "editors/3d/navigation/pan_mouse_button" || full_name == "editors/3d/navigation/zoom_mouse_button" || full_name == "editors/3d/navigation/emulate_3_button_mouse") {
+		// 当更改视轨键后，导航方案属于自定义方案
 		EditorSettings::get_singleton()->set_manually("editors/3d/navigation/navigation_scheme", (int)Node3DEditorViewport::NAVIGATION_CUSTOM);
 	} else if (full_name == "editors/3d/navigation/navigation_scheme") {
 		update_navigation_preset();
@@ -99,7 +100,22 @@ void EditorSettingsDialog::update_navigation_preset() {
 	Ref<InputEventKey> zoom_mod_key_2;
 	bool set_preset = false;
 
-	if (nav_scheme == Node3DEditorViewport::NAVIGATION_GODOT) {
+	// 通过导航方案，设置旋转平移等操作对应的鼠标按钮和修饰键
+	// GodotCad 定制Cad导航方案
+	if (nav_scheme == Node3DEditorViewport::NAVIGATION_CAD) {
+		set_preset = true;
+		set_orbit_mouse_button = Node3DEditorViewport::NAVIGATION_MIDDLE_MOUSE;
+		set_pan_mouse_button = Node3DEditorViewport::NAVIGATION_MIDDLE_MOUSE;
+		set_zoom_mouse_button = Node3DEditorViewport::NAVIGATION_MIDDLE_MOUSE;
+		set_3_button_mouse = false;
+		orbit_mod_key_1 = InputEventKey::create_reference(Key::SHIFT);
+		orbit_mod_key_2 = InputEventKey::create_reference(Key::NONE);
+		pan_mod_key_1 = InputEventKey::create_reference(Key::NONE);
+		pan_mod_key_2 = InputEventKey::create_reference(Key::NONE);
+		zoom_mod_key_1 = InputEventKey::create_reference(Key::CTRL);
+		zoom_mod_key_2 = InputEventKey::create_reference(Key::NONE);
+	}
+	else if (nav_scheme == Node3DEditorViewport::NAVIGATION_GODOT) {
 		set_preset = true;
 		set_orbit_mouse_button = Node3DEditorViewport::NAVIGATION_MIDDLE_MOUSE;
 		set_pan_mouse_button = Node3DEditorViewport::NAVIGATION_MIDDLE_MOUSE;

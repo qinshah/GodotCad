@@ -191,6 +191,8 @@ public:
 	static constexpr int32_t FRAME_TIME_HISTORY = 20;
 
 	enum NavigationScheme {
+		// GodotCad 设置cad导航方案枚举值
+		NAVIGATION_CAD = 5,
 		NAVIGATION_GODOT = 0,
 		NAVIGATION_MAYA = 1,
 		NAVIGATION_MODO = 2,
