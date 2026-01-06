@@ -2476,7 +2476,7 @@ msgstr "সাহায্য অনুসন্ধান করুন…"
 msgid "Online Documentation"
 msgstr "অনলাইন ডকুমেন্টেশন"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "Godot সম্পর্কে…"
 
 msgid "Project"

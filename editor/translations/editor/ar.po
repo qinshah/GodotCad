@@ -5018,7 +5018,7 @@ msgstr "اقترح ميزة"
 msgid "Send Docs Feedback"
 msgstr "إرسال الاستدراكات على \"التوثيقات\""
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "حول جوْدَتْ..."
 
 msgid "Support Godot Development"

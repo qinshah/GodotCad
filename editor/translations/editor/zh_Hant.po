@@ -5146,8 +5146,8 @@ msgstr "提出功能建議"
 msgid "Send Docs Feedback"
 msgstr "傳送說明文件回饋"
 
-msgid "About Godot..."
-msgstr "關於 Godot…"
+msgid "About Godot Cad..."
+msgstr "關於 Godot Cad…"
 
 msgid "Support Godot Development"
 msgstr "支援 Godot 開發"
@@ -7983,8 +7983,8 @@ msgstr "標籤名稱不可以下劃線開頭或結尾。"
 msgid "These characters are not allowed in tags: %s."
 msgstr "標籤中不允許使用以下字元：%s。"
 
-msgid "About Godot"
-msgstr "關於 Godot"
+msgid "About Godot Cad"
+msgstr "關於 Godot Cad"
 
 msgid "Settings"
 msgstr "設定"

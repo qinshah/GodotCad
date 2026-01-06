@@ -5045,7 +5045,7 @@ msgstr "Navrhnout funkci"
 msgid "Send Docs Feedback"
 msgstr "Odeslat zpětnou vazbu k dokumentaci"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "O aplikaci Godot..."
 
 msgid "Support Godot Development"

@@ -3498,7 +3498,7 @@ msgstr "Gợi ý một tính năng"
 msgid "Send Docs Feedback"
 msgstr "Gửi ý kiến phản hồi về hướng dẫn"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "Về Godot..."
 
 msgid "Support Godot Development"

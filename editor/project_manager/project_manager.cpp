@@ -236,6 +236,7 @@ void ProjectManager::_update_theme(bool p_skip_creation) {
 		background_panel->add_theme_style_override(SceneStringName(panel), get_theme_stylebox("Background", EditorStringName(EditorStyles)));
 		main_view_container->add_theme_style_override(SceneStringName(panel), get_theme_stylebox("panel_container", "ProjectManager"));
 
+		// TODO GodotCad  自定义logo
 		title_bar_logo->set_button_icon(get_editor_theme_icon("TitleBarLogo"));
 
 		_set_main_view_icon(MAIN_VIEW_PROJECTS, get_editor_theme_icon("ProjectList"));
@@ -248,7 +249,8 @@ void ProjectManager::_update_theme(bool p_skip_creation) {
 
 			empty_list_create_project->set_button_icon(get_editor_theme_icon("Add"));
 			empty_list_import_project->set_button_icon(get_editor_theme_icon("Load"));
-			empty_list_open_assetlib->set_button_icon(get_editor_theme_icon("AssetLib"));
+			// GodotCad 隐藏了打开资产库按钮
+			// empty_list_open_assetlib->set_button_icon(get_editor_theme_icon("AssetLib"));
 
 			empty_list_online_warning->add_theme_font_override(SceneStringName(font), get_theme_font("italic", EditorStringName(EditorFonts)));
 			empty_list_online_warning->add_theme_color_override(SceneStringName(font_color), get_theme_color("font_placeholder_color", EditorStringName(Editor)));
@@ -483,16 +485,17 @@ void ProjectManager::_update_list_placeholder() {
 		return;
 	}
 
-	empty_list_open_assetlib->set_visible(asset_library);
+	// GodotCad 隐藏了打开资产库按钮
+	// empty_list_open_assetlib->set_visible(asset_library);
 
-	const int network_mode = EDITOR_GET("network/connection/network_mode");
-	if (network_mode == EditorSettings::NETWORK_OFFLINE) {
-		empty_list_open_assetlib->set_text(TTRC("Go Online and Open Asset Library"));
-		empty_list_online_warning->set_visible(true);
-	} else {
-		empty_list_open_assetlib->set_text(TTRC("Open Asset Library"));
-		empty_list_online_warning->set_visible(false);
-	}
+	// const int network_mode = EDITOR_GET("network/connection/network_mode");
+	// if (network_mode == EditorSettings::NETWORK_OFFLINE) {
+	// 	empty_list_open_assetlib->set_text(TTRC("Go Online and Open Asset Library"));
+	// 	empty_list_online_warning->set_visible(true);
+	// } else {
+	// 	empty_list_open_assetlib->set_text(TTRC("Open Asset Library"));
+	// 	empty_list_online_warning->set_visible(false);
+	// }
 
 	empty_list_placeholder->show();
 }
@@ -1435,8 +1438,9 @@ ProjectManager::ProjectManager() {
 
 		title_bar_logo = memnew(Button);
 		title_bar_logo->set_flat(true);
-		title_bar_logo->set_tooltip_text(TTR("About Godot"));
-		left_hbox->add_child(title_bar_logo);
+		title_bar_logo->set_tooltip_text(TTR("About Godot Cad"));
+		// GodotCad 隐藏了Godot logo
+		// left_hbox->add_child(title_bar_logo);
 		title_bar_logo->connect(SceneStringName(pressed), callable_mp(this, &ProjectManager::_show_about));
 
 		bool global_menu = !bool(EDITOR_GET("interface/editor/use_embedded_menu")) && NativeMenu::get_singleton()->has_feature(NativeMenu::FEATURE_GLOBAL_MENU);
@@ -1622,10 +1626,11 @@ ProjectManager::ProjectManager() {
 				empty_list_actions->add_child(empty_list_import_project);
 				empty_list_import_project->connect(SceneStringName(pressed), callable_mp(this, &ProjectManager::_import_project));
 
+				// GodotCad 隐藏了打开资产库按钮和资产库联网提示
 				empty_list_open_assetlib = memnew(Button);
 				empty_list_open_assetlib->set_text(TTRC("Open Asset Library"));
 				empty_list_open_assetlib->set_theme_type_variation("PanelBackgroundButton");
-				empty_list_actions->add_child(empty_list_open_assetlib);
+				// empty_list_actions->add_child(empty_list_open_assetlib);
 				empty_list_open_assetlib->connect(SceneStringName(pressed), callable_mp(this, &ProjectManager::_open_asset_library_confirmed));
 
 				empty_list_online_warning = memnew(Label);
@@ -1635,7 +1640,7 @@ ProjectManager::ProjectManager() {
 				empty_list_online_warning->set_autowrap_mode(TextServer::AUTOWRAP_WORD);
 				empty_list_online_warning->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 				empty_list_online_warning->set_text(TTRC("Note: The Asset Library requires an online connection and involves sending data over the internet."));
-				empty_list_placeholder->add_child(empty_list_online_warning);
+				// empty_list_placeholder->add_child(empty_list_online_warning);
 			}
 
 			// The side bar with the edit, run, rename, etc. buttons.
@@ -1721,18 +1726,19 @@ ProjectManager::ProjectManager() {
 	}
 
 	// Asset library view.
-	if (AssetLibraryEditorPlugin::is_available()) {
-		asset_library = memnew(EditorAssetLibrary(true));
-		asset_library->set_name("AssetLibraryTab");
-		_add_main_view(MAIN_VIEW_ASSETLIB, TTRC("Asset Library"), Ref<Texture2D>(), asset_library);
-		asset_library->connect("install_asset", callable_mp(this, &ProjectManager::_install_project));
-	} else {
-		VBoxContainer *asset_library_filler = memnew(VBoxContainer);
-		asset_library_filler->set_name("AssetLibraryTab");
-		Button *asset_library_toggle = _add_main_view(MAIN_VIEW_ASSETLIB, TTRC("Asset Library"), Ref<Texture2D>(), asset_library_filler);
-		asset_library_toggle->set_disabled(true);
-		asset_library_toggle->set_tooltip_text(TTRC("Asset Library not available (due to using Web editor, or because SSL support disabled)."));
-	}
+	// GodotCad 隐藏了资产库
+	// if (AssetLibraryEditorPlugin::is_available()) {
+	// 	asset_library = memnew(EditorAssetLibrary(true));
+	// 	asset_library->set_name("AssetLibraryTab");
+	// 	_add_main_view(MAIN_VIEW_ASSETLIB, TTRC("Asset Library"), Ref<Texture2D>(), asset_library);
+	// 	asset_library->connect("install_asset", callable_mp(this, &ProjectManager::_install_project));
+	// } else {
+	// 	VBoxContainer *asset_library_filler = memnew(VBoxContainer);
+	// 	asset_library_filler->set_name("AssetLibraryTab");
+	// 	Button *asset_library_toggle = _add_main_view(MAIN_VIEW_ASSETLIB, TTRC("Asset Library"), Ref<Texture2D>(), asset_library_filler);
+	// 	asset_library_toggle->set_disabled(true);
+	// 	asset_library_toggle->set_tooltip_text(TTRC("Asset Library not available (due to using Web editor, or because SSL support disabled)."));
+	// }
 
 	// Footer bar.
 	{

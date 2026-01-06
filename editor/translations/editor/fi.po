@@ -5256,7 +5256,7 @@ msgstr "Ehdota ominaisuutta"
 msgid "Send Docs Feedback"
 msgstr "Lähetä palautetta ohjeesta"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "Tietoja Godotista..."
 
 msgid "Support Godot Development"

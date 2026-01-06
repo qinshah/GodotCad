@@ -2661,7 +2661,7 @@ msgstr "Raporti cimon"
 msgid "Send Docs Feedback"
 msgstr "Sendi rimarkojn pri la dokumentaro"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "Pri Godot..."
 
 msgid "Support Godot Development"
@@ -3264,7 +3264,7 @@ msgstr "La etikedo ne devas komenci aŭ fini per substreko."
 msgid "These characters are not allowed in tags: %s."
 msgstr "Etikedoj ne devas enhavi ĉi tiujn signojn: %s"
 
-msgid "About Godot"
+msgid "About Godot Cad"
 msgstr "Pri Godot"
 
 msgid "Settings"

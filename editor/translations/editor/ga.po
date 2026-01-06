@@ -5326,7 +5326,7 @@ msgstr "Mol Gné"
 msgid "Send Docs Feedback"
 msgstr "Seol Aiseolas Docs"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "Maidir le Godot..."
 
 msgid "Support Godot Development"
@@ -8359,7 +8359,7 @@ msgstr "Ní féidir le hainm an chlib tosú ná críochnú le fo-líne."
 msgid "These characters are not allowed in tags: %s."
 msgstr "Ní cheadaítear na carachtair seo i gclibeanna: %s."
 
-msgid "About Godot"
+msgid "About Godot Cad"
 msgstr "Maidir le Godot"
 
 msgid "Settings"

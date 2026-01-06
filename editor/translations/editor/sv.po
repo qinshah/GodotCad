@@ -5304,7 +5304,7 @@ msgstr "Föreslå en ny funktion"
 msgid "Send Docs Feedback"
 msgstr "Skicka dokumentations-återkoppling"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "Om Godot..."
 
 msgid "Support Godot Development"
@@ -8273,7 +8273,7 @@ msgstr "Namnet får inte innehålla blanksteg eller avslutas med understreck."
 msgid "These characters are not allowed in tags: %s."
 msgstr "Följande tecken är otillåtna i etiketter: %s."
 
-msgid "About Godot"
+msgid "About Godot Cad"
 msgstr "Om Godot"
 
 msgid "Settings"

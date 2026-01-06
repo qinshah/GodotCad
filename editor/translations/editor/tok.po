@@ -1674,7 +1674,7 @@ msgstr "o toki e namako"
 msgid "Send Docs Feedback"
 msgstr "o toki e lipu Koto"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "sona pi ilo Koto..."
 
 msgid "Support Godot Development"
@@ -2558,7 +2558,7 @@ msgstr "sina wile ala wile ante e pali lon nasin alasa?"
 msgid "Couldn't load project at '%s'. It may be missing or corrupted."
 msgstr "mi ken ala pali e pali lon '%s'. ken la ona li lon ala anu pakala."
 
-msgid "About Godot"
+msgid "About Godot Cad"
 msgstr "sona pi ilo Koto"
 
 msgid "Settings"

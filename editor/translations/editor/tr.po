@@ -5388,7 +5388,7 @@ msgstr "Yeni bir Özellik Öner"
 msgid "Send Docs Feedback"
 msgstr "Belgeler Hakkında Geri Bildirimde Bulun"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "Godot Hakkında..."
 
 msgid "Support Godot Development"
@@ -8405,7 +8405,7 @@ msgstr "Etiket ismi alt çizgi ile başlayamaz ya da bitemez."
 msgid "These characters are not allowed in tags: %s."
 msgstr "Şu karakterlere, etiketlerde izin verilmez: '%s'."
 
-msgid "About Godot"
+msgid "About Godot Cad"
 msgstr "Godot Hakkında"
 
 msgid "Settings"

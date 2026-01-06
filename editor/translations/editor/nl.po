@@ -4231,7 +4231,7 @@ msgstr "Stel een functie voor"
 msgid "Send Docs Feedback"
 msgstr "Stuur documentatie­feedback"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "Over Godot…"
 
 msgid "Support Godot Development"

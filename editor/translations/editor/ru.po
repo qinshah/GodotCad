@@ -5492,7 +5492,7 @@ msgstr "Предложить функцию"
 msgid "Send Docs Feedback"
 msgstr "Отправить отзыв о документации"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "О программе Godot…"
 
 msgid "Support Godot Development"
@@ -8501,7 +8501,7 @@ msgstr "Имя тега не может начинаться или заканч
 msgid "These characters are not allowed in tags: %s."
 msgstr "Эти символы нельзя использовать в метках: %s."
 
-msgid "About Godot"
+msgid "About Godot Cad"
 msgstr "О программе Godot"
 
 msgid "Settings"

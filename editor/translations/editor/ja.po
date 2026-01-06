@@ -5343,7 +5343,7 @@ msgstr "機能を提案する"
 msgid "Send Docs Feedback"
 msgstr "ドキュメントのフィードバックを送る"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "Godotについて..."
 
 msgid "Support Godot Development"
@@ -8329,7 +8329,7 @@ msgstr "タグ名は先頭や末尾をアンダースコアにすることはで
 msgid "These characters are not allowed in tags: %s."
 msgstr "文字 '%s' はタグに使用できません。"
 
-msgid "About Godot"
+msgid "About Godot Cad"
 msgstr "Godotについて"
 
 msgid "Settings"

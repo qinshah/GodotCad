@@ -5451,7 +5451,7 @@ msgstr "Neues Feature vorschlagen"
 msgid "Send Docs Feedback"
 msgstr "Dokumentationsvorschläge senden"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "Über Godot..."
 
 msgid "Support Godot Development"
@@ -8487,7 +8487,7 @@ msgstr "Tag-Name darf nicht mit Unterstrich anfangen oder enden."
 msgid "These characters are not allowed in tags: %s."
 msgstr "Diese Zeichen sind in Tags nicht gestattet: %s."
 
-msgid "About Godot"
+msgid "About Godot Cad"
 msgstr "Über Godot"
 
 msgid "Settings"

@@ -5351,7 +5351,7 @@ msgstr "Zasugeruj funkcjonalność"
 msgid "Send Docs Feedback"
 msgstr "Oceń dokumentację"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "O Godocie..."
 
 msgid "Support Godot Development"
@@ -8354,7 +8354,7 @@ msgstr "Nazwa tagu nie może zaczynać się lub kończyć znakiem podkreślenia.
 msgid "These characters are not allowed in tags: %s."
 msgstr "Te znaki nie są dozwolone w tagach: %s."
 
-msgid "About Godot"
+msgid "About Godot Cad"
 msgstr "O Godocie"
 
 msgid "Settings"

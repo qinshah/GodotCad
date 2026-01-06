@@ -5327,7 +5327,7 @@ msgstr "Proponha uma Funcionalidade"
 msgid "Send Docs Feedback"
 msgstr "Enviar Sugestão dos Docs"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "Sobre o Godot..."
 
 msgid "Support Godot Development"

@@ -5285,7 +5285,7 @@ msgstr "기능 제안"
 msgid "Send Docs Feedback"
 msgstr "문서 피드백 보내기"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "Godot 정보..."
 
 msgid "Support Godot Development"
@@ -8218,7 +8218,7 @@ msgstr "태그 이름은 밑줄로 시작하거나 끝날 수 없습니다."
 msgid "These characters are not allowed in tags: %s."
 msgstr "다음 문자들을 태그에 넣을 수 없습니다: %s."
 
-msgid "About Godot"
+msgid "About Godot Cad"
 msgstr "Godot 정보"
 
 msgid "Settings"

@@ -5288,7 +5288,7 @@ msgstr "پیشنهاد ویژگی"
 msgid "Send Docs Feedback"
 msgstr "فرستادن بازخورد مستندات"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "دربارهٔ گودوت..."
 
 msgid "Support Godot Development"
@@ -8249,7 +8249,7 @@ msgstr "نام تگ نمی‌تواند با زیرخط شروع یا تمام �
 msgid "These characters are not allowed in tags: %s."
 msgstr "این کاراکتر‌ها در برچسب‌ها مجاز نیستند: %s."
 
-msgid "About Godot"
+msgid "About Godot Cad"
 msgstr "دربارهٔ گودوت"
 
 msgid "Settings"

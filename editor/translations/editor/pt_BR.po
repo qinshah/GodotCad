@@ -5465,7 +5465,7 @@ msgstr "Sugerir uma Funcionalidade"
 msgid "Send Docs Feedback"
 msgstr "Enviar Sugestão de Docs"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "Sobre o Godot..."
 
 msgid "Support Godot Development"
@@ -8469,7 +8469,7 @@ msgstr "O nome da tag não pode começar ou terminar com um sublinhado."
 msgid "These characters are not allowed in tags: %s."
 msgstr "Estes caracteres não são permitidos em tags: %s."
 
-msgid "About Godot"
+msgid "About Godot Cad"
 msgstr "Sobre o Godot"
 
 msgid "Settings"

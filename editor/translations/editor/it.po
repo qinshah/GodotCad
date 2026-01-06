@@ -5430,7 +5430,7 @@ msgstr "Suggerisci una funzionalità"
 msgid "Send Docs Feedback"
 msgstr "Manda un parere sulla documentazione"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "Info su Godot..."
 
 msgid "Support Godot Development"
@@ -8476,7 +8476,7 @@ msgstr ""
 msgid "These characters are not allowed in tags: %s."
 msgstr "Questi caratteri non sono consentito nelle etichette: %s."
 
-msgid "About Godot"
+msgid "About Godot Cad"
 msgstr "Info su Godot"
 
 msgid "Settings"

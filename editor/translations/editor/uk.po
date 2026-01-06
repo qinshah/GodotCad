@@ -5335,7 +5335,7 @@ msgstr "Запропонувати можливість"
 msgid "Send Docs Feedback"
 msgstr "Надіслати відгук щодо документації"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "Про Godot..."
 
 msgid "Support Godot Development"
@@ -8330,7 +8330,7 @@ msgstr "Назва тегу не може починатися або закін
 msgid "These characters are not allowed in tags: %s."
 msgstr "Ці символи заборонені в тегах: %s."
 
-msgid "About Godot"
+msgid "About Godot Cad"
 msgstr "Про Godot"
 
 msgid "Settings"

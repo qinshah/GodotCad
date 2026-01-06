@@ -3098,7 +3098,7 @@ msgstr "Αναφορά Σφάλματος"
 msgid "Send Docs Feedback"
 msgstr "Αποστολή Σχολίων Τεκμηρίωσης"
 
-msgid "About Godot..."
+msgid "About Godot Cad..."
 msgstr "Σχετικά με την Godot..."
 
 msgid "Support Godot Development"
