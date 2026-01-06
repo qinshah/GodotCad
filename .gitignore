@@ -22,7 +22,9 @@
 ### Build configuration ###
 ###########################
 
-/CadProject
+# Ignore CadDev directory but keep CadDevDoc.md
+CadDev/*
+!CadDev/CadDevDoc.md
 
 /custom.py
 misc/hooks/pre-commit-custom-*
