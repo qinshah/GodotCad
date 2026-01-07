@@ -2262,7 +2262,7 @@ void Node3DEditorViewport::_sinput(const Ref<InputEvent> &p_event) {
 	// ============================================
 	// 这部分代码构建了一个快捷键检查集合，用于判断当前应该执行哪种导航操作
 	// 根据用户设置的鼠标按钮偏好和当前按下的修饰键（如 Shift）来决定是旋转、平移还是缩放
-	// 
+	//
 	// 关键逻辑：
 	// 1. 默认情况下，鼠标中键用于旋转（orbit）
 	// 2. 按住 Shift + 鼠标中键时，用于平移（pan）
@@ -2276,38 +2276,38 @@ void Node3DEditorViewport::_sinput(const Ref<InputEvent> &p_event) {
 		ViewportNavMouseButton orbit_mouse_preference = (ViewportNavMouseButton)EDITOR_GET("editors/3d/navigation/orbit_mouse_button").operator int();
 		ViewportNavMouseButton pan_mouse_preference = (ViewportNavMouseButton)EDITOR_GET("editors/3d/navigation/pan_mouse_button").operator int();
 		ViewportNavMouseButton zoom_mouse_preference = (ViewportNavMouseButton)EDITOR_GET("editors/3d/navigation/zoom_mouse_button").operator int();
-		
+
 		// 检查旋转修饰键是否按下（默认情况下两个修饰键都是 NONE，所以总是返回 true）
 		// 这意味着如果没有设置修饰键，默认行为就是旋转
 		bool orbit_mod_pressed = _is_nav_modifier_pressed("spatial_editor/viewport_orbit_modifier_1") && _is_nav_modifier_pressed("spatial_editor/viewport_orbit_modifier_2");
-		
+
 		// 检查平移修饰键是否按下
 		// viewport_pan_modifier_1 默认设置为 Key::SHIFT（见 6227 行）
 		// viewport_pan_modifier_2 默认为 Key::NONE
 		// 所以当按住 Shift 键时，pan_mod_pressed 为 true
 		bool pan_mod_pressed = _is_nav_modifier_pressed("spatial_editor/viewport_pan_modifier_1") && _is_nav_modifier_pressed("spatial_editor/viewport_pan_modifier_2");
-		
+
 		// 检查缩放修饰键是否按下
 		// viewport_zoom_modifier_1 默认设置为 Key::SHIFT
 		// viewport_zoom_modifier_2 默认设置为 Key::CTRL
 		// 所以当按住 Shift + Ctrl 时，zoom_mod_pressed 为 true
 		bool zoom_mod_pressed = _is_nav_modifier_pressed("spatial_editor/viewport_zoom_modifier_1") && _is_nav_modifier_pressed("spatial_editor/viewport_zoom_modifier_2");
-		
+
 		// 获取修饰键的输入数量（用于排序优先级）
 		int orbit_mod_input_count = _get_shortcut_input_count("spatial_editor/viewport_orbit_modifier_1") + _get_shortcut_input_count("spatial_editor/viewport_orbit_modifier_2");
 		int pan_mod_input_count = _get_shortcut_input_count("spatial_editor/viewport_pan_modifier_1") + _get_shortcut_input_count("spatial_editor/viewport_pan_modifier_2");
 		int zoom_mod_input_count = _get_shortcut_input_count("spatial_editor/viewport_zoom_modifier_1") + _get_shortcut_input_count("spatial_editor/viewport_zoom_modifier_2");
-		
+
 		// 检查修饰键是否已配置（非空）
 		bool orbit_not_empty = !_is_shortcut_empty("spatial_editor/viewport_orbit_modifier_1") || !_is_shortcut_empty("spatial_editor/viewport_orbit_modifier_2");
 		bool pan_not_empty = !_is_shortcut_empty("spatial_editor/viewport_pan_modifier_1") || !_is_shortcut_empty("spatial_editor/viewport_pan_modifier_2");
 		bool zoom_not_empty = !_is_shortcut_empty("spatial_editor/viewport_zoom_modifier_1") || !_is_shortcut_empty("spatial_editor/viewport_zoom_modifier_2");
-		
+
 		// 将检查结果添加到集合中，用于后续判断应该执行哪种导航操作
 		shortcut_check_sets.push_back(ShortcutCheckSet(orbit_mod_pressed, orbit_not_empty, orbit_mod_input_count, orbit_mouse_preference, NAVIGATION_ORBIT));
 		shortcut_check_sets.push_back(ShortcutCheckSet(pan_mod_pressed, pan_not_empty, pan_mod_input_count, pan_mouse_preference, NAVIGATION_PAN));
 		shortcut_check_sets.push_back(ShortcutCheckSet(zoom_mod_pressed, zoom_not_empty, zoom_mod_input_count, zoom_mouse_preference, NAVIGATION_ZOOM));
-		
+
 		// 对集合进行排序，优先级高的（需要更多修饰键的）排在前面
 		// 这样可以确保 Shift+Ctrl+中键优先匹配缩放，而不是平移
 		shortcut_check_sets.sort_custom<ShortcutCheckSetComparator>();
@@ -2413,21 +2413,21 @@ void Node3DEditorViewport::_sinput(const Ref<InputEvent> &p_event) {
 				nav_mode = NAVIGATION_PAN;
 			}
 
-		// ============================================
-		// 鼠标中键导航处理
-		// ============================================
-		// 当检测到鼠标中键被按下时，根据当前按下的修饰键决定导航模式：
-		// - 默认（无修饰键）: 旋转视图（NAVIGATION_ORBIT）
-		// - 按住 Shift: 平移视图（NAVIGATION_PAN）
-		// - 按住 Shift + Ctrl: 缩放视图（NAVIGATION_ZOOM）
-		// 
-		// _get_nav_mode_from_shortcut_check 函数会检查 shortcut_check_sets 集合，
-		// 找到匹配当前鼠标按钮和修饰键状态的导航模式
+			// ============================================
+			// 鼠标中键导航处理
+			// ============================================
+			// 当检测到鼠标中键被按下时，根据当前按下的修饰键决定导航模式：
+			// - 默认（无修饰键）: 旋转视图（NAVIGATION_ORBIT）
+			// - 按住 Shift: 平移视图（NAVIGATION_PAN）
+			// - 按住 Shift + Ctrl: 缩放视图（NAVIGATION_ZOOM）
+			//
+			// _get_nav_mode_from_shortcut_check 函数会检查 shortcut_check_sets 集合，
+			// 找到匹配当前鼠标按钮和修饰键状态的导航模式
 		} else if (m->get_button_mask().has_flag(MouseButtonMask::MIDDLE)) {
 			// 检查鼠标中键配合修饰键应该执行哪种导航操作
 			NavigationMode change_nav_from_shortcut = _get_nav_mode_from_shortcut_check(NAVIGATION_MIDDLE_MOUSE, shortcut_check_sets, false);
 			if (change_nav_from_shortcut != NAVIGATION_NONE) {
-				nav_mode = change_nav_from_shortcut;  // 设置导航模式（旋转、平移或缩放）
+				nav_mode = change_nav_from_shortcut; // 设置导航模式（旋转、平移或缩放）
 			}
 
 		} else if (m->get_button_mask().has_flag(MouseButtonMask::MB_XBUTTON1)) {
@@ -2869,27 +2869,27 @@ void Node3DEditorViewport::_nav_pan(Ref<InputEventWithModifiers> p_event, const 
 
 	// 构建相机变换矩阵，基于当前相机位置和旋转角度
 	Transform3D camera_transform;
-	camera_transform.translate_local(cursor.pos);  // 设置相机位置
-	camera_transform.basis.rotate(Vector3(1, 0, 0), -cursor.x_rot);  // 应用 X 轴旋转（俯仰角）
-	camera_transform.basis.rotate(Vector3(0, 1, 0), -cursor.y_rot);  // 应用 Y 轴旋转（偏航角）
-	
+	camera_transform.translate_local(cursor.pos); // 设置相机位置
+	camera_transform.basis.rotate(Vector3(1, 0, 0), -cursor.x_rot); // 应用 X 轴旋转（俯仰角）
+	camera_transform.basis.rotate(Vector3(0, 1, 0), -cursor.y_rot); // 应用 Y 轴旋转（偏航角）
+
 	// 获取用户设置的轴反转选项
 	const bool invert_x_axis = EDITOR_GET("editors/3d/navigation/invert_x_axis");
 	const bool invert_y_axis = EDITOR_GET("editors/3d/navigation/invert_y_axis");
-	
+
 	// 计算平移向量（在相机的本地坐标系中）
 	// p_relative 是鼠标移动的相对距离（像素）
 	Vector3 translation(
-			(invert_x_axis ? -1 : 1) * -p_relative.x * pan_speed,  // X 方向平移（左右）
-			(invert_y_axis ? -1 : 1) * p_relative.y * pan_speed,    // Y 方向平移（上下）
-			0);  // Z 方向不移动（保持在同一深度）
-	
+			(invert_x_axis ? -1 : 1) * -p_relative.x * pan_speed, // X 方向平移（左右）
+			(invert_y_axis ? -1 : 1) * p_relative.y * pan_speed, // Y 方向平移（上下）
+			0); // Z 方向不移动（保持在同一深度）
+
 	// 根据相机距离缩放平移量，距离越远，平移幅度越大
 	translation *= cursor.distance / DISTANCE_DEFAULT;
-	
+
 	// 在相机本地坐标系中应用平移
 	camera_transform.translate_local(translation);
-	
+
 	// 更新相机位置
 	cursor.pos = camera_transform.origin;
 }
@@ -2923,11 +2923,15 @@ void Node3DEditorViewport::_nav_zoom(Ref<InputEventWithModifiers> p_event, const
 // ============================================
 // 默认情况下，鼠标中键拖动时调用此函数旋转视图
 // 旋转操作围绕当前视口中心（cursor.pos）旋转相机，保持相机到中心的距离不变
-// 
+//
 // 旋转逻辑：
 // - 鼠标上下移动：改变俯仰角（pitch，X 轴旋转）
 // - 鼠标左右移动：改变偏航角（yaw，Y 轴旋转）
 // - 旋转中心是 cursor.pos（当前视口中心位置）
+// 3D视口中的视角旋转导航功能
+// 该函数处理用户在3D视口中的视角旋转操作，支持角度捕捉和视角类型自动识别
+// @param p_event - 输入事件，包含按键状态等信息
+// @param p_relative - 鼠标相对移动向量，表示鼠标移动的距离和方向
 void Node3DEditorViewport::_nav_orbit(Ref<InputEventWithModifiers> p_event, const Vector2 &p_relative) {
 	// 如果旋转被锁定，则改为平移操作
 	if (lock_rotation) {
@@ -2938,7 +2942,7 @@ void Node3DEditorViewport::_nav_orbit(Ref<InputEventWithModifiers> p_event, cons
 	// 获取旋转灵敏度设置（每像素多少度）
 	const real_t degrees_per_pixel = EDITOR_GET("editors/3d/navigation_feel/orbit_sensitivity");
 	const real_t radians_per_pixel = Math::deg_to_rad(degrees_per_pixel);
-	
+
 	// 获取用户设置的轴反转选项
 	const bool invert_y_axis = EDITOR_GET("editors/3d/navigation/invert_y_axis");
 	const bool invert_x_axis = EDITOR_GET("editors/3d/navigation/invert_x_axis");
@@ -2948,7 +2952,7 @@ void Node3DEditorViewport::_nav_orbit(Ref<InputEventWithModifiers> p_event, cons
 	// 限制俯仰角在 -90 度到 +90 度之间（-1.57 到 1.57 弧度），防止相机翻转
 	cursor.unsnapped_x_rot += p_relative.y * radians_per_pixel * (invert_y_axis ? -1 : 1);
 	cursor.unsnapped_x_rot = CLAMP(cursor.unsnapped_x_rot, -1.57, 1.57);
-	
+
 	// 更新偏航角（Y 轴旋转，左右移动鼠标）
 	// p_relative.x 是鼠标在屏幕上的水平移动距离（像素）
 	cursor.unsnapped_y_rot += p_relative.x * radians_per_pixel * (invert_x_axis ? -1 : 1);
@@ -2958,44 +2962,64 @@ void Node3DEditorViewport::_nav_orbit(Ref<InputEventWithModifiers> p_event, cons
 	cursor.x_rot = cursor.unsnapped_x_rot;
 	cursor.y_rot = cursor.unsnapped_y_rot;
 
+	// 检查是否按下了角度捕捉修饰键
 	if (_is_nav_modifier_pressed("spatial_editor/viewport_orbit_snap_modifier_1") &&
 			_is_nav_modifier_pressed("spatial_editor/viewport_orbit_snap_modifier_2")) {
+		// 定义捕捉角度为45度
 		const real_t snap_angle = Math::deg_to_rad(45.0);
+		// 获取角度捕捉阈值
 		const real_t snap_threshold = Math::deg_to_rad((real_t)EDITOR_GET("editors/3d/navigation_feel/angle_snap_threshold"));
 
+		// 计算捕捉后的旋转角度
 		real_t x_rot_snapped = Math::snapped(cursor.unsnapped_x_rot, snap_angle);
 		real_t y_rot_snapped = Math::snapped(cursor.unsnapped_y_rot, snap_angle);
 
+		// 计算原始角度与捕捉角度之间的距离
 		real_t x_dist = Math::abs(cursor.unsnapped_x_rot - x_rot_snapped);
 		real_t y_dist = Math::abs(cursor.unsnapped_y_rot - y_rot_snapped);
 
+		// 如果两个轴的角度距离都在捕捉阈值内，则执行捕捉操作
 		if (x_dist < snap_threshold && y_dist < snap_threshold) {
+			// 应用捕捉后的旋转角度
 			cursor.x_rot = x_rot_snapped;
 			cursor.y_rot = y_rot_snapped;
 
+			// 将Y轴旋转角度规范化到 [-π, π] 范围内
 			real_t y_rot_wrapped = Math::wrapf(y_rot_snapped, (real_t)-Math::PI, (real_t)Math::PI);
 
+			// 检查X轴角度是否接近0（正面、背面、左右视图）
 			if (Math::abs(x_rot_snapped) < snap_threshold) {
+				// 根据Y轴角度确定视图类型
 				if (Math::abs(y_rot_wrapped) < snap_threshold) {
+					// 角度接近0，设置为前视图
 					view_type = VIEW_TYPE_FRONT;
 				} else if (Math::abs(Math::abs(y_rot_wrapped) - Math::PI) < snap_threshold) {
+					// 角度接近±π，设置为后视图
 					view_type = VIEW_TYPE_REAR;
 				} else if (Math::abs(y_rot_wrapped - Math::PI / 2.0) < snap_threshold) {
+					// 角度接近π/2，设置为左视图
 					view_type = VIEW_TYPE_LEFT;
 				} else if (Math::abs(y_rot_wrapped + Math::PI / 2.0) < snap_threshold) {
+					// 角度接近-π/2，设置为右视图
 					view_type = VIEW_TYPE_RIGHT;
 				} else {
-					// Only switch to ortho for 90-degree views.
+					// 只有在90度视角时才切换到正交视图
 					return;
 				}
+				// 设置自动正交视图并更新视图名称
 				_set_auto_orthogonal();
 				_update_name();
-			} else if (Math::abs(Math::abs(x_rot_snapped) - Math::PI / 2.0) < snap_threshold) {
+			}
+			// 检查X轴角度是否接近±π/2（顶视图或底视图）
+			else if (Math::abs(Math::abs(x_rot_snapped) - Math::PI / 2.0) < snap_threshold) {
+				// 检查Y轴角度是否是90度视角（0, ±π, π/2, -π/2）
 				if (Math::abs(y_rot_wrapped) < snap_threshold ||
 						Math::abs(Math::abs(y_rot_wrapped) - Math::PI) < snap_threshold ||
 						Math::abs(y_rot_wrapped - Math::PI / 2.0) < snap_threshold ||
 						Math::abs(y_rot_wrapped + Math::PI / 2.0) < snap_threshold) {
+					// 根据X轴角度的正负确定顶视图或底视图
 					view_type = x_rot_snapped > 0 ? VIEW_TYPE_TOP : VIEW_TYPE_BOTTOM;
+					// 设置自动正交视图并更新视图名称
 					_set_auto_orthogonal();
 					_update_name();
 				}
@@ -3140,15 +3164,15 @@ void Node3DEditorViewport::scale_freelook_speed(real_t scale) {
 // 导航修饰键检查函数
 // ============================================
 // 检查指定的导航修饰键是否被按下
-// 
+//
 // 逻辑：
 // - 如果快捷键为空（未配置），返回 true（视为"总是满足"）
 // - 如果快捷键已配置，检查对应的按键是否被按下
-// 
+//
 // 这个函数的关键作用是：
 // - 对于设置为 Key::NONE 的修饰键，总是返回 true
 // - 对于设置为具体按键的修饰键（如 Key::SHIFT），检查该键是否被按下
-// 
+//
 // 例如：
 // - viewport_orbit_modifier_1/2 都设置为 NONE，所以总是返回 true
 // - viewport_pan_modifier_1 设置为 SHIFT，只有当 Shift 键被按下时才返回 true
@@ -6340,30 +6364,31 @@ Node3DEditorViewport::Node3DEditorViewport(Node3DEditor *p_spatial_editor, int p
 	// 视图导航修饰键注册
 	// ============================================
 	// 这些快捷键定义了鼠标中键配合不同修饰键时的行为
-	// 
+	//
 	// 默认配置：
 	// - 鼠标中键（无修饰键）: 旋转视图（orbit）
 	// - Shift + 鼠标中键: 平移视图（pan）
 	// - Shift + Ctrl + 鼠标中键: 缩放视图（zoom）
 	// - Alt + 鼠标中键: 角度捕捉旋转（snap orbit）
-	// 
+	//
 	// 注意：每个操作需要两个修饰键都满足条件才会触发
 	// 如果修饰键设置为 Key::NONE，则视为"总是满足"（空修饰键）
-	
+
 	// Registering with Key::NONE intentionally creates an empty Array.
 	// 旋转修饰键：两个都设置为 NONE，意味着不需要修饰键即可旋转（默认行为）
 	register_shortcut_action("spatial_editor/viewport_orbit_modifier_1", TTRC("Viewport Orbit Modifier 1"), Key::NONE);
 	register_shortcut_action("spatial_editor/viewport_orbit_modifier_2", TTRC("Viewport Orbit Modifier 2"), Key::NONE);
-	
+
 	// 角度捕捉旋转修饰键：Alt + 鼠标中键时，旋转会捕捉到 45 度角
-	register_shortcut_action("spatial_editor/viewport_orbit_snap_modifier_1", TTRC("Viewport Orbit Snap Modifier 1"), Key::ALT);
+	// GodotCad 默认打开角度捕捉
+	register_shortcut_action("spatial_editor/viewport_orbit_snap_modifier_1", TTRC("Viewport Orbit Snap Modifier 1"), Key::NONE);
 	register_shortcut_action("spatial_editor/viewport_orbit_snap_modifier_2", TTRC("Viewport Orbit Snap Modifier 2"), Key::NONE);
-	
+
 	// 平移修饰键：Shift + 鼠标中键时平移视图
 	// 这是用户提到的"按住 Shift + 中键时变成平移"的关键配置
 	register_shortcut_action("spatial_editor/viewport_pan_modifier_1", TTRC("Viewport Pan Modifier 1"), Key::SHIFT);
 	register_shortcut_action("spatial_editor/viewport_pan_modifier_2", TTRC("Viewport Pan Modifier 2"), Key::NONE);
-	
+
 	// 缩放修饰键：Shift + Ctrl + 鼠标中键时缩放视图
 	register_shortcut_action("spatial_editor/viewport_zoom_modifier_1", TTRC("Viewport Zoom Modifier 1"), Key::SHIFT);
 	register_shortcut_action("spatial_editor/viewport_zoom_modifier_2", TTRC("Viewport Zoom Modifier 2"), Key::CTRL);
@@ -10052,25 +10077,25 @@ Node3DEditor::Node3DEditor() {
 	// 使用小键盘（Keypad）按键，方便快速操作
 
 	// 视图切换快捷键（使用小键盘）
-	ED_SHORTCUT("spatial_editor/bottom_view", TTRC("Bottom View"), KeyModifierMask::ALT + Key::KP_7);  // Alt+小键盘7: 底视图
-	ED_SHORTCUT("spatial_editor/top_view", TTRC("Top View"), Key::KP_7);  // 小键盘7: 顶视图
-	ED_SHORTCUT("spatial_editor/rear_view", TTRC("Rear View"), KeyModifierMask::ALT + Key::KP_1);  // Alt+小键盘1: 后视图
-	ED_SHORTCUT("spatial_editor/front_view", TTRC("Front View"), Key::KP_1);  // 小键盘1: 前视图
-	ED_SHORTCUT("spatial_editor/left_view", TTRC("Left View"), KeyModifierMask::ALT + Key::KP_3);  // Alt+小键盘3: 左视图
-	ED_SHORTCUT("spatial_editor/right_view", TTRC("Right View"), Key::KP_3);  // 小键盘3: 右视图
-	
+	ED_SHORTCUT("spatial_editor/bottom_view", TTRC("Bottom View"), KeyModifierMask::ALT + Key::KP_7); // Alt+小键盘7: 底视图
+	ED_SHORTCUT("spatial_editor/top_view", TTRC("Top View"), Key::KP_7); // 小键盘7: 顶视图
+	ED_SHORTCUT("spatial_editor/rear_view", TTRC("Rear View"), KeyModifierMask::ALT + Key::KP_1); // Alt+小键盘1: 后视图
+	ED_SHORTCUT("spatial_editor/front_view", TTRC("Front View"), Key::KP_1); // 小键盘1: 前视图
+	ED_SHORTCUT("spatial_editor/left_view", TTRC("Left View"), KeyModifierMask::ALT + Key::KP_3); // Alt+小键盘3: 左视图
+	ED_SHORTCUT("spatial_editor/right_view", TTRC("Right View"), Key::KP_3); // 小键盘3: 右视图
+
 	// 轨道旋转快捷键（使用小键盘方向键）
-	ED_SHORTCUT("spatial_editor/orbit_view_down", TTRC("Orbit View Down"), Key::KP_2);  // 小键盘2: 向下旋转
-	ED_SHORTCUT("spatial_editor/orbit_view_left", TTRC("Orbit View Left"), Key::KP_4);  // 小键盘4: 向左旋转
-	ED_SHORTCUT("spatial_editor/orbit_view_right", TTRC("Orbit View Right"), Key::KP_6);  // 小键盘6: 向右旋转
-	ED_SHORTCUT("spatial_editor/orbit_view_up", TTRC("Orbit View Up"), Key::KP_8);  // 小键盘8: 向上旋转
-	ED_SHORTCUT("spatial_editor/orbit_view_180", TTRC("Orbit View 180"), Key::KP_9);  // 小键盘9: 旋转180度
-	
+	ED_SHORTCUT("spatial_editor/orbit_view_down", TTRC("Orbit View Down"), Key::KP_2); // 小键盘2: 向下旋转
+	ED_SHORTCUT("spatial_editor/orbit_view_left", TTRC("Orbit View Left"), Key::KP_4); // 小键盘4: 向左旋转
+	ED_SHORTCUT("spatial_editor/orbit_view_right", TTRC("Orbit View Right"), Key::KP_6); // 小键盘6: 向右旋转
+	ED_SHORTCUT("spatial_editor/orbit_view_up", TTRC("Orbit View Up"), Key::KP_8); // 小键盘8: 向上旋转
+	ED_SHORTCUT("spatial_editor/orbit_view_180", TTRC("Orbit View 180"), Key::KP_9); // 小键盘9: 旋转180度
+
 	// 其他视图快捷键
-	ED_SHORTCUT("spatial_editor/switch_perspective_orthogonal", TTRC("Switch Perspective/Orthogonal View"), Key::KP_5);  // 小键盘5: 切换透视/正交视图
-	ED_SHORTCUT("spatial_editor/insert_anim_key", TTRC("Insert Animation Key"), Key::K);  // K: 插入动画关键帧
-	ED_SHORTCUT("spatial_editor/focus_origin", TTRC("Focus Origin"), Key::O);  // O: 聚焦到原点
-	ED_SHORTCUT("spatial_editor/focus_selection", TTRC("Focus Selection"), Key::F);  // F: 聚焦到选中对象
+	ED_SHORTCUT("spatial_editor/switch_perspective_orthogonal", TTRC("Switch Perspective/Orthogonal View"), Key::KP_5); // 小键盘5: 切换透视/正交视图
+	ED_SHORTCUT("spatial_editor/insert_anim_key", TTRC("Insert Animation Key"), Key::K); // K: 插入动画关键帧
+	ED_SHORTCUT("spatial_editor/focus_origin", TTRC("Focus Origin"), Key::O); // O: 聚焦到原点
+	ED_SHORTCUT("spatial_editor/focus_selection", TTRC("Focus Selection"), Key::F); // F: 聚焦到选中对象
 	ED_SHORTCUT_ARRAY("spatial_editor/align_transform_with_view", TTRC("Align Transform with View"),
 			{ int32_t(KeyModifierMask::ALT | KeyModifierMask::CTRL | Key::KP_0),
 					int32_t(KeyModifierMask::ALT | KeyModifierMask::CTRL | Key::M),
