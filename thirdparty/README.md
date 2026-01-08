@@ -591,6 +591,20 @@ Files extracted from upstream source:
 - `LICENSE`
 
 
+## libredwg
+
+- Upstream: https://github.com/LibreDWG/libredwg
+- Version: 0.13.0 (1d5e7e01e0e4347f4e7a16d4c773d2a16aa72f8, 2025)
+- License: GPL-3.0
+
+Files extracted from upstream source:
+
+- `src/*.{c,h}` (except `gen-dynapi.pl`, `txt2pl.pl`)
+- `include/*.h`
+- `src/codepages/` folder
+- `COPYING`
+
+
 ## libtheora
 
 - Upstream: https://www.theora.org

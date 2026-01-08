@@ -78,6 +78,51 @@ if env["builtin_clipper2"]:
     env.Append(CPPDEFINES=["CLIPPER2_ENABLED"])
 
     env_thirdparty.add_source_files(thirdparty_obj, thirdparty_clipper_sources)
+    
+# LibreDWG library
+if env["builtin_libredwg"]:
+    thirdparty_libredwg_dir = "#thirdparty/libredwg/"
+    thirdparty_libredwg_sources = [
+        "bits.c",
+        "classes.c",
+        "codepages.c",
+        "common.c",
+        "decode.c",
+        "decode_r11.c",
+        "decode_r2007.c",
+        "dwg.c",
+        "dwg_api.c",
+        "dxfclasses.c",
+        "dynapi.c",
+        "encode.c",
+        "free.c",
+        "geom.c",
+        "hash.c",
+        "in_dxf.c",
+        "in_json.c",
+        "objects.c",
+        "out_dxf.c",
+        "out_dxfb.c",
+        "out_geojson.c",
+        "out_json.c",
+        "print.c",
+        "reedsolomon.c",
+    ]
+    # 如果是 macOS/Linux，可能需要这个宏来支持一些 C99 特性
+    if env["platform"] != "windows":
+        env.Append(CFLAGS=["-std=gnu99"])
+    thirdparty_libredwg_sources = [thirdparty_libredwg_dir + "src/" + file for file in thirdparty_libredwg_sources]
+
+    env_thirdparty.Prepend(CPPPATH=[
+    thirdparty_libredwg_dir + "include", 
+    thirdparty_libredwg_dir + "src",
+    ])
+    env.Prepend(CPPPATH=[thirdparty_libredwg_dir + "include"])
+
+    env_thirdparty.Append(CPPDEFINES=["LIBREDWG_ENABLED"])
+    env.Append(CPPDEFINES=["LIBREDWG_ENABLED"])
+
+    env_thirdparty.add_source_files(thirdparty_obj, thirdparty_libredwg_sources)
 
 # Zlib library, can be unbundled
 if env["builtin_zlib"]:
