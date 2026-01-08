@@ -111,6 +111,9 @@ if env["builtin_libredwg"]:
     # 如果是 macOS/Linux，可能需要这个宏来支持一些 C99 特性
     if env["platform"] != "windows":
         env.Append(CFLAGS=["-std=gnu99"])
+
+    if env["platform"] == "macos":
+        env.Append(LIBS=["iconv"])
     thirdparty_libredwg_sources = [thirdparty_libredwg_dir + "src/" + file for file in thirdparty_libredwg_sources]
 
     env_thirdparty.Prepend(CPPPATH=[
