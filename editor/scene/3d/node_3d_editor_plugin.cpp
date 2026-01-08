@@ -30,6 +30,7 @@
 
 #include "node_3d_editor_plugin.h"
 
+#include "cad_command_bar.h"
 #include "core/config/project_settings.h"
 #include "core/input/input.h"
 #include "core/input/input_map.h"
@@ -3809,40 +3810,153 @@ void Node3DEditorViewport::_notification(int p_what) {
 	}
 }
 
+// ============================================
+// 缩放指示条功能相关代码注释说明
+// ============================================
+// 
+// 功能概述：
+// 当用户在3D编辑器视口中进行缩放操作（鼠标滚轮或拖拽）时，视口左侧会浮动显示一个距离条，
+// 该距离条用于帮助用户直观地了解当前缩放级别（相机到焦点的距离）。
+// 
+// 相关变量：
+// - zoom_indicator_delay: 缩放指示条显示的倒计时（秒），每次缩放操作时重置为 ZOOM_FREELOOK_INDICATOR_DELAY_S (1.5秒)
+// - cursor.distance: 当前相机到焦点的距离（单位：米）
+// - zoom_failed_attempts_count: 缩放失败次数计数，用于显示缩放限制提示
+// 
+// 工作流程：
+// 1. 当用户进行缩放操作时（如滚动鼠标滚轮），会调用 scale_cursor_distance() 函数
+// 2. 该函数会设置 zoom_indicator_delay = ZOOM_FREELOOK_INDICATOR_DELAY_S (1.5秒)
+// 3. 在 _notification(NOTIFICATION_PROCESS) 中，zoom_indicator_delay 会不断递减
+// 4. 当 zoom_indicator_delay > 0 时，在 _draw() 函数中会调用 draw_indicator_bar() 绘制指示条
+// 5. 当 zoom_indicator_delay <= 0 时，指示条会消失
+// 
+// 位置：视口左侧，垂直居中显示
+// 包含：图标 + 垂直进度条 + 距离数值（米）
+// 颜色：青色 (Color(0.7, 0.95, 1.0))
+// 
+
+// ============================================
+// 缩放指示条功能详细注释说明
+// ============================================
+// 
+// 【功能概述】
+// 当用户在3D编辑器视口进行缩放操作（鼠标滚轮、触控板缩放手势或导航快捷键）时，
+// 视口左侧会浮动显示一个垂直的距离条，用于直观展示当前缩放级别（相机到焦点的距离）。
+// 
+// 【触发条件】
+// 1. 滚动鼠标滚轮进行缩放（_sinput 函数中 MouseButton::WHEEL_UP/WHEEL_DOWN）
+// 2. 使用触控板缩放手势（InputEventMagnifyGesture）
+// 3. 使用导航快捷键（如 Shift+Ctrl+鼠标中键拖动进行缩放）
+// 4. 自由视角模式下调整速度（scale_freelook_speed）
+// 
+// 【相关变量说明】
+// - zoom_indicator_delay: 缩放指示条显示的倒计时（秒），
+//   定义在第122行：constexpr real_t ZOOM_FREELOOK_INDICATOR_DELAY_S = 1.5;
+//   每次缩放操作时重置为1.5秒倒计时
+// 
+// - cursor.distance: 当前相机到焦点的距离（单位：米），表示缩放级别
+// - zoom_failed_attempts_count: 缩放失败次数计数，当连续缩放失败超过15次时，
+//   显示缩放限制提示（zoom_limit_label），提醒用户已达到缩放极限
+// 
+// 【工作流程】
+// 1. 缩放操作触发：用户滚动鼠标滚轮或执行缩放手势
+// 2. 调用 scale_cursor_distance() 或 scale_freelook_speed() 函数
+// 3. 这些函数设置 zoom_indicator_delay = ZOOM_FREELOOK_INDICATOR_DELAY_S (1.5秒)
+// 4. 调用 surface->queue_redraw() 请求重绘视口
+// 5. 在 _notification(NOTIFICATION_PROCESS) 中，每帧递减 zoom_indicator_delay
+// 6. 当 zoom_indicator_delay > 0 时，在 _draw() 函数中调用 draw_indicator_bar() 绘制指示条
+// 7. 当 zoom_indicator_delay <= 0 时，调用 zoom_limit_label->hide() 隐藏指示条
+// 
+// 【UI组件位置与外观】
+// - 位置：视口左侧边缘，垂直居中显示
+// - 包含元素：
+//   * 左侧10像素开始的垂直条（宽度6像素，高度为视口的一半）
+//   * 垂直条的填充部分（根据距离使用对数缩放计算填充比例）
+//   * 边框（黑色半透明）
+//   * 图标（在条上方，显示 ViewportZoom 或 ViewportSpeed 图标）
+//   * 数值文本（在图标下方，显示距离 "X m" 或速度 "X m/s"）
+// - 颜色：青色 (Color(0.7, 0.95, 1.0)) 用于普通模式，金黄色 (Color(1.0, 0.95, 0.7)) 用于自由视角模式
+// 
+// 【对数缩放说明】
+// 使用对数缩放计算填充比例：logscale_t = 1.0 - Math::log1p(cursor.distance - min_distance) / Math::log1p(scale_length)
+// 这样设计的原因：
+// - 在近距离时，距离变化更明显，需要更精细的显示
+// - 在远距离时，距离变化影响较小，可以更平缓地显示
+// - 使用对数缩放使整个缩放范围都能被合理展示
+// 
+// 【显示精度】
+// 根据距离/速度值动态选择显示精度：
+// - 值 < 1.0 时：显示2位小数（近距离时需要更高精度）
+// - 值 >= 1.0 时：显示1位小数（远距离时不需要过高精度）
+// 
+
+// ============================================
+// 缩放指示条绘制函数
+// ============================================
+// 
+// 功能：绘制视口左侧的缩放/速度指示条
+// 
+// 参数说明：
+// - p_surface: 要绘制到的控件表面（Control &类型）
+// - p_fill: 填充比例 (0.0-1.0)，基于对数缩放计算得到
+// - p_icon: 缩放图标（ViewportZoom 或 ViewportSpeed 的 Texture2D）
+// - p_font: 绘制数值文本使用的字体
+// - p_font_size: 字体大小
+// - p_text: 要显示的文本（距离 "X m" 或速度 "X m/s"）
+// - p_color: 文本和图标颜色
+// 
+// 绘制内容详解：
+// 1. 垂直条背景：半透明灰色矩形 (Color(1, 1, 1, 0.2))
+// 2. 填充部分：较亮的颜色矩形 (Color(1, 1, 1, 0.6))，高度由 p_fill 决定
+// 3. 边框：黑色半透明边框 (Color(0, 0, 0, 0.7))，用于在任何背景下保持可见性
+// 4. 图标：在条上方绘制，与条水平居中对齐
+// 5. 数值文本：在图标下方绘制，显示距离或速度值，带黑色轮廓确保可读性
+// 
 static void draw_indicator_bar(Control &p_surface, real_t p_fill, const Ref<Texture2D> p_icon, const Ref<Font> p_font, int p_font_size, const String &p_text, const Color &p_color) {
 	// Adjust bar size from control height
 	const Vector2 surface_size = p_surface.get_size();
 	const real_t h = surface_size.y / 2.0;
 	const real_t y = (surface_size.y - h) / 2.0;
 
+	// 条的位置和尺寸：x=10, y=居中, 宽=6像素, 高=视口一半
 	const Rect2 r(10 * EDSCALE, y, 6 * EDSCALE, h);
+	// 填充高度 = 条高度 * 填充比例
 	const real_t sy = r.size.y * p_fill;
 
 	// Note: because this bar appears over the viewport, it has to stay readable for any background color
 	// Draw both neutral dark and bright colors to account this
+	// 绘制背景（半透明灰色）
 	p_surface.draw_rect(r, p_color * Color(1, 1, 1, 0.2));
+	// 绘制填充部分（较亮的颜色）
 	p_surface.draw_rect(Rect2(r.position.x, r.position.y + r.size.y - sy, r.size.x, sy), p_color * Color(1, 1, 1, 0.6));
+	// 绘制边框（黑色半透明）
 	p_surface.draw_rect(r.grow(1), Color(0, 0, 0, 0.7), false, Math::round(EDSCALE));
 
+	// 计算图标位置：在条上方，水平居中对齐
 	const Vector2 icon_size = p_icon->get_size();
 	const Vector2 icon_pos = Vector2(r.position.x - (icon_size.x - r.size.x) / 2, r.position.y + r.size.y + 2 * EDSCALE);
+	// 绘制图标
 	p_surface.draw_texture(p_icon, icon_pos, p_color);
 
 	// Draw text below the bar (for speed/zoom information).
+	// 在图标下方绘制数值文本
 	p_surface.draw_string_outline(p_font, Vector2(icon_pos.x, icon_pos.y + icon_size.y + 16 * EDSCALE), p_text, HORIZONTAL_ALIGNMENT_LEFT, -1.f, p_font_size, Math::round(4 * EDSCALE), Color(0, 0, 0));
 	p_surface.draw_string(p_font, Vector2(icon_pos.x, icon_pos.y + icon_size.y + 16 * EDSCALE), p_text, HORIZONTAL_ALIGNMENT_LEFT, -1.f, p_font_size, p_color);
 }
 
 void Node3DEditorViewport::_draw() {
+	// 将编辑器插件的3D绘制请求转发到视口表面
 	EditorNode::get_singleton()->get_editor_plugins_over()->forward_3d_draw_over_viewport(surface);
 	EditorNode::get_singleton()->get_editor_plugins_force_over()->forward_3d_force_draw_over_viewport(surface);
 
+	// 绘制焦点边框 - 当前视口或旋转控制获得焦点时显示
 	if (surface->has_focus() || rotation_control->has_focus()) {
 		Size2 size = surface->get_size();
 		Rect2 r = Rect2(Point2(), size);
 		get_theme_stylebox(SNAME("FocusViewport"), EditorStringName(EditorStyles))->draw(surface->get_canvas_item(), r);
 	}
 
+	// 绘制区域选择矩形 - 当用户进行区域选择且已通过移动阈值时
 	if (cursor.region_select && movement_threshold_passed) {
 		const Rect2 selection_rect = Rect2(cursor.region_begin, cursor.region_end - cursor.region_begin);
 
@@ -3859,6 +3973,7 @@ void Node3DEditorViewport::_draw() {
 
 	RID ci = surface->get_canvas_item();
 
+	// 绘制临时消息 - 如果消息时间大于0，则在视口底部显示消息
 	if (message_time > 0) {
 		Ref<Font> font = get_theme_font(SceneStringName(font), SNAME("Label"));
 		int font_size = get_theme_font_size(SceneStringName(font_size), SNAME("Label"));
@@ -3868,6 +3983,7 @@ void Node3DEditorViewport::_draw() {
 		font->draw_string(ci, msgpos, message, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color(1, 1, 1, 1));
 	}
 
+	// 绘制旋转模式的视觉反馈 - 当前处于旋转模式时
 	if (_edit.mode == TRANSFORM_ROTATE) {
 		Point2 center = point_to_screen(_edit.center);
 
@@ -3890,6 +4006,7 @@ void Node3DEditorViewport::_draw() {
 				break;
 		}
 
+		// 绘制旋转弧线 - 当旋转弧线可见且初始点击向量不为零时
 		if (_is_rotation_arc_visible() && !_edit.initial_click_vector.is_zero_approx()) {
 			Vector3 up = _edit.rotation_axis;
 			Vector3 right = _edit.initial_click_vector;
@@ -3939,6 +4056,7 @@ void Node3DEditorViewport::_draw() {
 			float start_angle = is_counterclockwise ? 0.0f : display_angle;
 			float end_angle = is_counterclockwise ? display_angle : 0.0f;
 
+			// 绘制旋转角度填充区域
 			for (int i = 0; i < num_segments; i++) {
 				float t1 = float(i) / float(num_segments);
 				float t2 = float(i + 1) / float(num_segments);
@@ -3986,6 +4104,7 @@ void Node3DEditorViewport::_draw() {
 					Math::round(2 * EDSCALE));
 		}
 
+		// 绘制从鼠标位置到旋转中心的线条
 		if (_edit.show_rotation_line) {
 			handle_color = handle_color.from_hsv(handle_color.get_h(), 0.25, 1.0, 1);
 			RenderingServer::get_singleton()->canvas_item_add_line(
@@ -3996,6 +4115,8 @@ void Node3DEditorViewport::_draw() {
 					Math::round(2 * EDSCALE));
 		}
 	}
+	
+	// 绘制预览摄像机边框或缩放指示条
 	if (previewing) {
 		Size2 ss = Size2(GLOBAL_GET("display/window/size/viewport_width"), GLOBAL_GET("display/window/size/viewport_height"));
 		float aspect = ss.aspect();
@@ -4023,53 +4144,66 @@ void Node3DEditorViewport::_draw() {
 		surface->draw_rect(draw_rect, Color(0.6, 0.6, 0.1, 0.5), false, Math::round(2 * EDSCALE));
 
 	} else {
-		if (zoom_indicator_delay > 0.0) {
-			if (is_freelook_active()) {
-				// Show speed
+			// ============================================
+			// 缩放指示条显示逻辑
+			// ============================================
+			// 仅当 zoom_indicator_delay > 0 时显示（缩放后 1.5 秒内）
+			if (zoom_indicator_delay > 0.0) {
+				if (is_freelook_active()) {
+					// Show speed
+					// 自由视角模式：显示速度条
+					// 计算速度范围（基于相机的近裁剪面和远裁剪面）
+					real_t min_speed = MAX(camera->get_near() * 4, ZOOM_FREELOOK_MIN);
+					real_t max_speed = MIN(camera->get_far() / 4, ZOOM_FREELOOK_MAX);
+					real_t scale_length = (max_speed - min_speed);
 
-				real_t min_speed = MAX(camera->get_near() * 4, ZOOM_FREELOOK_MIN);
-				real_t max_speed = MIN(camera->get_far() / 4, ZOOM_FREELOOK_MAX);
-				real_t scale_length = (max_speed - min_speed);
+					if (!Math::is_zero_approx(scale_length)) {
+						// 使用对数缩放使低速时的变化更明显
+						real_t logscale_t = 1.0 - Math::log1p(freelook_speed - min_speed) / Math::log1p(scale_length);
 
-				if (!Math::is_zero_approx(scale_length)) {
-					real_t logscale_t = 1.0 - Math::log1p(freelook_speed - min_speed) / Math::log1p(scale_length);
+						// Display the freelook speed to help the user get a better sense of scale.
+						// 根据速度值选择精度：低速时显示2位小数，高速时显示1位
+						const int precision = freelook_speed < 1.0 ? 2 : 1;
+						draw_indicator_bar(
+								*surface,
+								1.0 - logscale_t,
+								get_editor_theme_icon(SNAME("ViewportSpeed")),
+								get_theme_font("bold", EditorStringName(EditorFonts)),
+								get_theme_font_size(SceneStringName(font_size), SNAME("Label")),
+								vformat("%s m/s", String::num(freelook_speed).pad_decimals(precision)),
+								Color(1.0, 0.95, 0.7));
+					}
 
-					// Display the freelook speed to help the user get a better sense of scale.
-					const int precision = freelook_speed < 1.0 ? 2 : 1;
-					draw_indicator_bar(
-							*surface,
-							1.0 - logscale_t,
-							get_editor_theme_icon(SNAME("ViewportSpeed")),
-							get_theme_font("bold", EditorStringName(EditorFonts)),
-							get_theme_font_size(SceneStringName(font_size), SNAME("Label")),
-							vformat("%s m/s", String::num(freelook_speed).pad_decimals(precision)),
-							Color(1.0, 0.95, 0.7));
-				}
+				} else {
+					// Show zoom
+					// 普通模式：显示缩放距离条
+					// 当连续缩放失败超过15次时，显示缩放限制提示
+					zoom_limit_label->set_visible(zoom_failed_attempts_count > 15);
 
-			} else {
-				// Show zoom
-				zoom_limit_label->set_visible(zoom_failed_attempts_count > 15);
+					// 计算距离范围
+					real_t min_distance = MAX(camera->get_near() * 4, ZOOM_FREELOOK_MIN);
+					real_t max_distance = MIN(camera->get_far() / 4, ZOOM_FREELOOK_MAX);
+					real_t scale_length = (max_distance - min_distance);
 
-				real_t min_distance = MAX(camera->get_near() * 4, ZOOM_FREELOOK_MIN);
-				real_t max_distance = MIN(camera->get_far() / 4, ZOOM_FREELOOK_MAX);
-				real_t scale_length = (max_distance - min_distance);
+					if (!Math::is_zero_approx(scale_length)) {
+						// 使用对数缩放计算填充比例
+						// 这样在近距离时变化更明显，远距离时变化更平缓
+						real_t logscale_t = 1.0 - Math::log1p(cursor.distance - min_distance) / Math::log1p(scale_length);
 
-				if (!Math::is_zero_approx(scale_length)) {
-					real_t logscale_t = 1.0 - Math::log1p(cursor.distance - min_distance) / Math::log1p(scale_length);
-
-					// Display the zoom center distance to help the user get a better sense of scale.
-					const int precision = cursor.distance < 1.0 ? 2 : 1;
-					draw_indicator_bar(
-							*surface,
-							logscale_t,
-							get_editor_theme_icon(SNAME("ViewportZoom")),
-							get_theme_font("bold", EditorStringName(EditorFonts)),
-							get_theme_font_size(SceneStringName(font_size), SNAME("Label")),
-							vformat("%s m", String::num(cursor.distance).pad_decimals(precision)),
-							Color(0.7, 0.95, 1.0));
+						// Display the zoom center distance to help the user get a better sense of scale.
+						// 根据距离值选择精度：近距离时显示2位小数，远距离时显示1位
+						const int precision = cursor.distance < 1.0 ? 2 : 1;
+						draw_indicator_bar(
+								*surface,
+								logscale_t,
+								get_editor_theme_icon(SNAME("ViewportZoom")),
+								get_theme_font("bold", EditorStringName(EditorFonts)),
+								get_theme_font_size(SceneStringName(font_size), SNAME("Label")),
+								vformat("%s m", String::num(cursor.distance).pad_decimals(precision)),
+								Color(0.7, 0.95, 1.0));
+					}
 				}
 			}
-		}
 	}
 }
 
@@ -8957,6 +9091,23 @@ void Node3DEditor::shortcut_input(const Ref<InputEvent> &p_event) {
 	}
 
 	snap_key_enabled = Input::get_singleton()->is_key_pressed(Key::CMD_OR_CTRL);
+
+	// CAD命令栏快捷键: Ctrl+Space 或 Ctrl+K
+	Ref<InputEventKey> key = p_event;
+	if (key.is_valid() && key->is_pressed() && !key->is_echo()) {
+		if (key->is_command_or_control_pressed()) {
+			if (key->get_keycode() == Key::SPACE || key->get_keycode() == Key::K) {
+				if (command_bar) {
+					if (command_bar->is_command_bar_active()) {
+						command_bar->deactivate();
+					} else {
+						command_bar->activate();
+					}
+					accept_event();
+				}
+			}
+		}
+	}
 }
 
 void Node3DEditor::_sun_environ_settings_pressed() {
@@ -9096,6 +9247,11 @@ void Node3DEditor::_notification(int p_what) {
 			environ_state->set_custom_minimum_size(environ_vb->get_combined_minimum_size());
 
 			ProjectSettings::get_singleton()->connect("settings_changed", callable_mp(this, &Node3DEditor::update_all_gizmos).bind(Variant()));
+
+			// 初始化CAD命令栏的命令
+			if (command_bar) {
+				command_bar->collect_editor_commands();
+			}
 		} break;
 
 		case NOTIFICATION_ACCESSIBILITY_UPDATE: {
@@ -10143,6 +10299,11 @@ Node3DEditor::Node3DEditor() {
 	context_toolbar_hbox = memnew(HBoxContainer);
 	context_toolbar_panel->add_child(context_toolbar_hbox);
 	main_flow->add_child(context_toolbar_panel);
+
+	// CAD风格命令栏 - 添加到工具栏右侧
+	command_bar = memnew(CadCommandBar);
+	command_bar->set_spatial_editor(this);
+	main_flow->add_child(command_bar);
 
 	// Get the view menu popup and have it stay open when a checkable item is selected
 	p = view_layout_menu->get_popup();

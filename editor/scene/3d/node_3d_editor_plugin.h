@@ -40,6 +40,8 @@
 #include "scene/resources/gradient.h"
 #include "scene/resources/immediate_mesh.h"
 
+class CadCommandBar;
+
 class AcceptDialog;
 class CheckBox;
 class ColorPickerButton;
@@ -682,6 +684,36 @@ public:
 
 	};
 
+	// 菜单选项枚举 - 用于命令栏和菜单项
+	enum MenuOption {
+		MENU_TOOL_TRANSFORM,
+		MENU_TOOL_MOVE,
+		MENU_TOOL_ROTATE,
+		MENU_TOOL_SCALE,
+		MENU_TOOL_SELECT,
+		MENU_TOOL_LIST_SELECT,
+		MENU_TOOL_LOCAL_COORDS,
+		MENU_TOOL_USE_SNAP,
+		MENU_TRANSFORM_CONFIGURE_SNAP,
+		MENU_TRANSFORM_DIALOG,
+		MENU_VIEW_USE_1_VIEWPORT,
+		MENU_VIEW_USE_2_VIEWPORTS,
+		MENU_VIEW_USE_2_VIEWPORTS_ALT,
+		MENU_VIEW_USE_3_VIEWPORTS,
+		MENU_VIEW_USE_3_VIEWPORTS_ALT,
+		MENU_VIEW_USE_4_VIEWPORTS,
+		MENU_VIEW_ORIGIN,
+		MENU_VIEW_GRID,
+		MENU_VIEW_GIZMOS_3D_ICONS,
+		MENU_VIEW_CAMERA_SETTINGS,
+		MENU_LOCK_SELECTED,
+		MENU_UNLOCK_SELECTED,
+		MENU_GROUP_SELECTED,
+		MENU_UNGROUP_SELECTED,
+		MENU_SNAP_TO_FLOOR,
+		MENU_RULER,
+	};
+
 private:
 	EditorSelection *editor_selection = nullptr;
 
@@ -761,37 +793,11 @@ private:
 		Transform3D transform;
 	} gizmo;
 
-	enum MenuOption {
-		MENU_TOOL_TRANSFORM,
-		MENU_TOOL_MOVE,
-		MENU_TOOL_ROTATE,
-		MENU_TOOL_SCALE,
-		MENU_TOOL_SELECT,
-		MENU_TOOL_LIST_SELECT,
-		MENU_TOOL_LOCAL_COORDS,
-		MENU_TOOL_USE_SNAP,
-		MENU_TRANSFORM_CONFIGURE_SNAP,
-		MENU_TRANSFORM_DIALOG,
-		MENU_VIEW_USE_1_VIEWPORT,
-		MENU_VIEW_USE_2_VIEWPORTS,
-		MENU_VIEW_USE_2_VIEWPORTS_ALT,
-		MENU_VIEW_USE_3_VIEWPORTS,
-		MENU_VIEW_USE_3_VIEWPORTS_ALT,
-		MENU_VIEW_USE_4_VIEWPORTS,
-		MENU_VIEW_ORIGIN,
-		MENU_VIEW_GRID,
-		MENU_VIEW_GIZMOS_3D_ICONS,
-		MENU_VIEW_CAMERA_SETTINGS,
-		MENU_LOCK_SELECTED,
-		MENU_UNLOCK_SELECTED,
-		MENU_GROUP_SELECTED,
-		MENU_UNGROUP_SELECTED,
-		MENU_SNAP_TO_FLOOR,
-		MENU_RULER,
-	};
-
 	Button *tool_button[TOOL_MAX];
 	Button *tool_option_button[TOOL_OPT_MAX];
+
+	// CAD风格命令栏
+	CadCommandBar *command_bar = nullptr;
 
 	MenuButton *transform_menu = nullptr;
 	PopupMenu *gizmos_menu = nullptr;
@@ -1073,6 +1079,11 @@ public:
 
 	void edit(Node3D *p_spatial);
 	void clear();
+
+	// CAD命令栏相关
+	CadCommandBar *get_command_bar() { return command_bar; }
+	void execute_menu_item(int p_option) { _menu_item_pressed(p_option); }
+	void toggle_menu_item(bool p_pressed, int p_option) { _menu_item_toggled(p_pressed, p_option); }
 
 	Node3DEditor();
 	~Node3DEditor();

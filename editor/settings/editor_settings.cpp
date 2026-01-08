@@ -963,6 +963,14 @@ void EditorSettings::_load_defaults(Ref<ConfigFile> p_extra_config) {
 	EDITOR_SETTING_BASIC(Variant::INT, PROPERTY_HINT_ENUM, "editors/3d/freelook/freelook_activation_modifier", 0, "None,Shift,Alt,Meta,Ctrl")
 	_initial_set("editors/3d/freelook/freelook_speed_zoom_link", false);
 
+	// 3D: CAD Command Bar (CAD风格命令栏设置)
+	_initial_set("editors/3d/command_bar/enabled", true);
+	EDITOR_SETTING(Variant::INT, PROPERTY_HINT_RANGE, "editors/3d/command_bar/max_history_size", 50, "10,200,1")
+	EDITOR_SETTING(Variant::INT, PROPERTY_HINT_RANGE, "editors/3d/command_bar/max_search_results", 20, "5,50,1")
+	_initial_set("editors/3d/command_bar/show_shortcut_hints", true);
+	_initial_set("editors/3d/command_bar/fuzzy_search", true);
+	_initial_set("editors/3d/command_bar/pinyin_search", true);
+
 	// 3D: Manipulator
 	EDITOR_SETTING(Variant::INT, PROPERTY_HINT_RANGE, "editors/3d/manipulator_gizmo_size", 80, "16,160,1");
 	EDITOR_SETTING(Variant::FLOAT, PROPERTY_HINT_RANGE, "editors/3d/manipulator_gizmo_opacity", 0.9, "0,1,0.01")
